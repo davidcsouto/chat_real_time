@@ -1,0 +1,33 @@
+<html>
+<!DOCTYPE html>
+   <html lang="en">
+   <head>
+       <meta charset="UTF-8">
+       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+       <title>Chat em Tempo Real</title>
+   </head>
+   <body>
+       <ul id="messages"></ul>
+       <form id="form" action="">
+           <input id="input" autocomplete="off" /><button>Enviar</button>
+       </form>
+
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"></script>
+       <script>
+           var socket = io.connect('http://' + document.domain + ':' + location.port); // get the document domain + the port to make the connection.
+
+           socket.on('message', function(msg) { // defines the event that will be called
+               var ul = document.getElementById('messages'); // recovery from DOM the element
+               var li = document.createElement('li'); // create a element and stores in a variable
+               li.appendChild(document.createTextNode(msg)); // create a node of text
+               ul.appendChild(li); // create a new li with the previous configuration
+           });
+
+           document.getElementById('form').onsubmit = function() { // action that will be called when clicking button
+               socket.emit('message', document.getElementById('input').value); // communicate to server-side what value was received.
+               document.getElementById('input').value = ''; // attributing empty value to the field
+               return false; // it's necessary return false to not repeat the method's execution.
+           };
+       </script>
+   </body>
+</html>
